@@ -1,0 +1,93 @@
+
+<section class="create-reports py-8">
+    <div class="container mx-auto p-8 bg-white border rounded-lg shadow-md">
+        <h2 class="text-2xl text-gray-700 mb-3">Create Report</h2>
+        <% if(flash && flash.success.length > 0){ %>
+            <div class="flex p-4 mb-4 text-sm md:w-3/12 w-full text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
+                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                <div>
+                <span class="font-medium"><%= flash.success %></span>
+                </div>
+            </div>
+        <% } %>
+        <% if(flash && flash.error.length > 0){ %>
+            <div class="flex p-4 mb-4 text-sm  md:w-3/12 w-full text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+                <svg aria-hidden="true" class="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+                <div>
+                <span class="font-medium"><%= flash.error %></span>
+                </div>
+            </div>
+        <% } %>
+        <form action="/create-report/<%= patient._id %>" class="report-form mt-6" method="POST" id="reportForm">
+            <div class="flex flex-wrap items-start gap-x-4 gap-y-4 lg:w-8/12 w-full">
+                <div class="form-group md:w-5/12 lg:w-4/12 w-full">
+                    <select name="status" id="status" class="text-md border border-gray-200 focus:outline-none focus:border-blue-500 block p-3 rounded w-full">
+                        <option value="">Select Status</option>
+                        <option value="Negative">Negative</option>
+                        <option value="Positive Admit">Positive Admit</option>
+                        <option value="Travelled Quarantine">Travelled Quarantine</option>
+                        <option value="Symptoms Quarantine">Symptoms Quarantine</option>
+                    </select>
+                </div>
+                <div class="form-group md:w-5/12 lg:w-3/12 w-full">
+                    <input type="hidden" name="name" value="<%= patient.name %>">
+                    <button class="w-full rounded p-3 px-2 bg-blue-500 text-white text-md font-bold" type="submit">Create Report</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<section class="all-reports pb-8">
+    <div class="container mx-auto p-8 bg-white border rounded-lg shadow-md">
+        <h2 class="text-2xl text-gray-700 mb-3">All Reports</h2>
+        <!-- if have reports of this patient -->
+        <% if(reports.length > 0) { %>
+        <div class="w-full bg-white">
+                <div class="flow-root">
+                    <ul role="list" class="divide-y divide-gray-200">
+                        <% for(let report of reports) { %>
+                            <li class="py-3 sm:py-4">
+                                <div class="flex flex-wrap justify-between items-start md:space-y-0 space-y-4">
+                                    <div class="sm:w-5/12 w-full">
+                                        <p class="text-sm text-gray-900 truncate capitalize">
+                                           <%= report._id %>
+                                        </p>
+                                        <p class="text-sm text-gray-500 truncate dark:text-gray-400 my-1.5">
+                                            <span class="text-black font-medium">Status: </span>
+                                            <% if(report.status == 'Negative') { %>
+                                                <span class="inline-block bg-green-100 text-green-500 px-3 py-1 rounded-xl ml-2"><%= report.status %></span>
+                                            <% } %>
+                                            <% if(report.status == 'Positive Admit') { %>
+                                                <span class="inline-block bg-red-100 text-red-500 px-3 py-1 rounded-xl ml-2"><%= report.status %></span>
+                                            <% } %>
+                                            <% if(report.status == 'Travelled Quarantine') { %>
+                                                <span class="inline-block bg-yellow-100 text-yellow-600 px-3 py-1 rounded-xl ml-2"><%= report.status %></span>
+                                            <% } %>
+                                            <% if(report.status == 'Symptoms Quarantine') { %>
+                                                <span class="inline-block bg-orange-100 text-orange-500 px-3 py-1 rounded-xl ml-2"><%= report.status %></span>
+                                            <% } %>
+                                            
+                                        </p>
+                                    </div>
+                                    <div class="sm:w-7/12 w-full md:text-right">
+                                        <span class="text-xs text-lime-600 bg-lime-100 py-2 px-3 rounded">
+                                            <%= report.createdAt %>
+                                        </span>
+                                    </div>
+                                </div>
+                            </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        <% } %>
+        <!-- if dont have any report for this patient -->
+        <% if(reports.length == 0) { %>
+            <div class="flow-root">
+                <p class="text-gray-500">No reports found for patient <%= patient.name %>.</p>
+            </div>
+        <% } %>
+        
+    </div>
+</section>
